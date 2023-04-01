@@ -53,10 +53,12 @@ class Favorites(Base):
     __tablename__ = 'favorites'
     id = Column(Integer, primary_key=True)
     name = Column(String(100), nullable= False)
-    
-    
-    
+    user_id = Column(Integer)
+    films_id = Column(Integer)
+    character_id = Column(Integer)
+    planets_id = Column(Integer)
 
-
+def to_dict(self):
+    return {}
 ## Draw from SQLAlchemy base
 render_er(Base, 'diagram.png')
