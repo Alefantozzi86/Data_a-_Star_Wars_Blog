@@ -15,7 +15,10 @@ class User(Base):
     user_name = Column(String(50), nullable=False, unique=True)
     email = Column(String(50), nullable=False, unique=True)
     password = Column(String(15), nullable=False)
-    favorites_id = Column(Integer, ForeignKey('favorites.id'))
+    favorites_character = relationship('Favorites_Character')
+    favorites_planets = relationship('Favorites_Planets')
+    favorites_films = relationship('Favorites_Films')
+
 
 class Character(Base):
     __tablename__ = 'character'
@@ -26,7 +29,7 @@ class Character(Base):
     hair_color = Column(String(50))
     skin_color = Column(String(50))
     eye_color = Column(String(50))
-    favorites_id = Column(Integer, ForeignKey('favorites.id'))
+    favorites_character = relationship('Favorites_Character')
        
 class Planets(Base):
     __tablename__ = 'planets'
@@ -37,7 +40,7 @@ class Planets(Base):
     orbital_period = Column(Integer)
     rotation_period = Column(Integer)
     diameter = Column(Integer)
-    favorites_id = Column(Integer, ForeignKey('favorites.id'))
+    favorites_planets = relationship('Favorites_Planets')
 
 class Films(Base):
     __tablename__ = 'films'
@@ -47,16 +50,26 @@ class Films(Base):
     director = Column(String(50))
     producer = Column(String(50))
     release_date = Column(Integer)
-    favorites_id = Column(Integer, ForeignKey('favorites.id'))
+    favorites_films = relationship('Favorites_Films')
 
-class Favorites(Base):
-    __tablename__ = 'favorites'
+class Favorites_Character(Base):
+    __tablename__ = 'favorites_character'
     id = Column(Integer, primary_key=True)
-    name = Column(String(100), nullable= False)
-    user_id = Column(Integer)
-    films_id = Column(Integer)
-    character_id = Column(Integer)
-    planets_id = Column(Integer)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    character_id = Column(Integer, ForeignKey('character.id'))
+
+class Favorites_Planets(Base):
+    __tablename__ = 'favorites_planets'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    planets_id = Column(Integer, ForeignKey('planets.id'))
+
+class Favorites_Films(Base):
+    __tablename__ = 'favorites_films'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    films_id = Column(Integer, ForeignKey('films.id'))
+   
 
 def to_dict(self):
     return {}
