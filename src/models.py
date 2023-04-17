@@ -6,6 +6,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 from eralchemy2 import render_er
 
+
    
 Base = declarative_base()
 
@@ -15,10 +16,20 @@ class User(Base):
     user_name = Column(String(50), nullable=False, unique=True)
     email = Column(String(50), nullable=False, unique=True)
     password = Column(String(15), nullable=False)
-    favorites_character = relationship('Favorites_Character')
-    favorites_planets = relationship('Favorites_Planets')
-    favorites_films = relationship('Favorites_Films')
 
+class Data(Base):
+    __tablename__ = 'data'   
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50), nullable=False, unique=True)
+    favorite_id  = Column(Integer, ForeignKey('favorite.id'))
+
+class Favorite(Base):
+    __tablename__ = 'favorite'   
+    user_id= Column(Integer, primary_key=True)
+    name =  Column(String(50), nullable=False, unique=True)
+    data_id = Column(Integer, primary_key=True)
+    category = Column(String(50), nullable=False, unique=True)
+    user_id  = Column(Integer, ForeignKey('user.id'))
 
 class Character(Base):
     __tablename__ = 'character'
@@ -29,8 +40,9 @@ class Character(Base):
     hair_color = Column(String(50))
     skin_color = Column(String(50))
     eye_color = Column(String(50))
-    favorites_character = relationship('Favorites_Character')
-       
+    data_id  = Column(Integer, ForeignKey('data.id'))
+
+
 class Planets(Base):
     __tablename__ = 'planets'
     id = Column(Integer, primary_key=True)
@@ -40,7 +52,7 @@ class Planets(Base):
     orbital_period = Column(Integer)
     rotation_period = Column(Integer)
     diameter = Column(Integer)
-    favorites_planets = relationship('Favorites_Planets')
+    data_id  = Column(Integer, ForeignKey('data.id'))
 
 class Films(Base):
     __tablename__ = 'films'
@@ -50,25 +62,10 @@ class Films(Base):
     director = Column(String(50))
     producer = Column(String(50))
     release_date = Column(Integer)
-    favorites_films = relationship('Favorites_Films')
+    data_id  = Column(Integer, ForeignKey('data.id'))
 
-class Favorites_Character(Base):
-    __tablename__ = 'favorites_character'
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'))
-    character_id = Column(Integer, ForeignKey('character.id'))
 
-class Favorites_Planets(Base):
-    __tablename__ = 'favorites_planets'
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'))
-    planets_id = Column(Integer, ForeignKey('planets.id'))
 
-class Favorites_Films(Base):
-    __tablename__ = 'favorites_films'
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'))
-    films_id = Column(Integer, ForeignKey('films.id'))
    
 
 def to_dict(self):
